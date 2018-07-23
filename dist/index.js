@@ -128,8 +128,10 @@ class FibaroHC2 {
     }
     LoadAccessories(devices) {
         this.log('Loading accessories', '');
+		//this.log(devices);
         devices.map((s, i, a) => {
             if (s.visible == true && s.name.charAt(0) != "_") {
+				this.log('\t[', s.type, '] s.name: ', s.name, ', s.properties.dead:', s.properties.dead);
                 let siblings = this.findSiblingDevices(s, a);
                 this.addAccessory(shadows_1.ShadowAccessory.createShadowAccessory(s, siblings, Accessory, Service, Characteristic, this));
             }
