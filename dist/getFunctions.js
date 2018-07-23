@@ -100,6 +100,7 @@ class GetFunctions {
     }
     getCurrentPosition(callback, characteristic, service, IDs, properties) {
         let r = parseInt(properties.value);
+		this.platform.log("getCurrentPosition: ", r, "properties.dead:", properties.dead)
         if (r >= characteristic.props.minValue && r <= characteristic.props.maxValue) {
             if (r == 99)
                 r = 100;
@@ -219,6 +220,7 @@ class GetFunctions {
     }
     getObstructionDetected(callback, characteristic, service, IDs, properties) {
         this.returnValue(0, callback, characteristic);
+		// TODO
     }
     getBatteryLevel(callback, characteristic, service, IDs, properties) {
         let r = parseFloat(properties.batteryLevel);
