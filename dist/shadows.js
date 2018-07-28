@@ -28,8 +28,11 @@ class ShadowAccessory {
         this.name = device.name;
         this.roomID = device.roomID;
         this.services = services;
+        var type = device.type.replace(/com.fibaro./i, '');	// ex: com.fibaro.FGRM222 => FGRM222
+        this.model = type;
+        this.serial = device.properties.serialNumber // TODO or "<unknown>"
         this.accessory = null,
-            this.hapAccessory = hapAccessory;
+        this.hapAccessory = hapAccessory;
         this.hapService = hapService;
         this.hapCharacteristic = hapCharacteristic;
         this.platform = platform;
@@ -41,8 +44,9 @@ class ShadowAccessory {
     }
     initAccessory() {
         this.accessory.getService(this.hapService.AccessoryInformation)
-            .setCharacteristic(this.hapCharacteristic.Manufacturer, "IlCato")
-            .setCharacteristic(this.hapCharacteristic.Model, "HomeCenterBridgedAccessory")
+            .setCharacteristic(this.hapCharacteristic.Manufacturer, "Fibaro HC2")
+            //.setCharacteristic(this.hapCharacteristic.Model, "HomeCenterBridgedAccessory")
+            .setCharacteristic(this.hapCharacteristic.Model, this.model)
             .setCharacteristic(this.hapCharacteristic.SerialNumber, "<unknown>");
     }
     removeNoMoreExistingServices() {
