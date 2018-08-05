@@ -27,8 +27,8 @@
 //            "thermostattimeout": "PUT THE NUMBER OF SECONDS FOR THE THERMOSTAT TIMEOUT, DEFAULT: 7200 (2 HOURS). PUT 0 FOR INFINITE",
 //            "enablecoolingstatemanagemnt": "PUT on TO AUTOMATICALLY MANAGE HEATING STATE FOR THERMOSTAT, off TO DISABLE IT. DEFAULT off",
 //            "doorlocktimeout": "PUT 0 FOR DISABLING THE CHECK. PUT A POSITIVE INTEGER N NUMBER ENABLE IT AFTER N SECONDS. DEFAULT 0",
-//			  "IFTTTmakerkey": "PUT KEY OF YOUR MAKER CHANNEL HERE (USED TO SIGNAL EVENTS TO THE OUTSIDE)",
-//			  "enableIFTTTnotification": "PUT all FOR ENABLING NOTIFICATIONS OF ALL KIND OF EVENTS, hc FOR CHANGE EVENTS COMING FROM HOME CENTER, hk FOR CHANGE EVENTS COMING FROM HOMEKIT, none FOR DISABLING NOTIFICATIONS; DEFAULT IS none"
+//            "IFTTTmakerkey": "PUT KEY OF YOUR MAKER CHANNEL HERE (USED TO SIGNAL EVENTS TO THE OUTSIDE)",
+//            "enableIFTTTnotification": "PUT all FOR ENABLING NOTIFICATIONS OF ALL KIND OF EVENTS, hc FOR CHANGE EVENTS COMING FROM HOME CENTER, hk FOR CHANGE EVENTS COMING FROM HOMEKIT, none FOR DISABLING NOTIFICATIONS; DEFAULT IS none"
 //     }
 // ],
 //
@@ -125,11 +125,23 @@ class FibaroHC2 {
         this.log("Configured Accessory: ", accessory.displayName);
         this.accessories.set(accessory.context.uniqueSeed, accessory);
         accessory.reachable = true;
+        this.log("Configured Accessory reachable: ", accessory.reachable);
     }
     LoadAccessories(devices) {
         this.log('Loading accessories', '');
+        //this.log(devices);
         devices.map((s, i, a) => {
             if (s.visible == true && s.name.charAt(0) != "_") {
+                // Log model
+                var model = s.type.replace(/com.fibaro./i, ''); // ex: com.fibaro.FGRM222 => FGRM222
+                this.log('#', s.id, '\t[', model, ']', '\ts.name: ', s.name); 
+                this.log('\t[', model, '] \tdead:', s.properties.dead);
+                // Log serialNumber
+                if (s.properties.serialNumber != "")
+                    this.log('\t[',  model, '] serialNumber:', s.properties.serialNumber);
+                // Log batteryLevel
+                if (s.properties.batteryLevel != undefined)
+                    this.log('\t[',  model, '] batteryLevel:', s.properties.batteryLevel, "%");
                 let siblings = this.findSiblingDevices(s, a);
                 this.addAccessory(shadows_1.ShadowAccessory.createShadowAccessory(s, siblings, Accessory, Service, Characteristic, this));
             }
@@ -178,6 +190,45 @@ class FibaroHC2 {
         }
         shadowAccessory.setAccessory(a);
         // init accessory
+        
+           /* DEBUG TESTING getInfo
+            [FibaroHC2] this.fibaroClient.getInfo() { 
+            serialNumber: 'HC2-016247',
+            hcName: 'HC2-016247',
+            mac: '00:22:4d:ab:a5:6b',
+            softVersion: '4.140',
+            beta: false,
+            zwaveVersion: '3.67',
+            timeFormat: 24,
+            zwaveRegion: 'EU',
+            serverStatus: 1532815954,
+            defaultLanguage: 'fr',
+            sunsetHour: '21:38',
+            sunriseHour: '06:40',
+            hotelMode: false,
+            updateStableAvailable: true,
+            temperatureUnit: 'C',
+            newestStableVersion: '4.180',
+            updateBetaAvailable: true,
+            newestBetaVersion: '4.162',
+            batteryLowNotification: true,
+            smsManagement: true,
+            date: '23:21 | 1.8.2018',
+            timestamp: 1533158478,
+            online: true,
+            recoveryCondition: 'Ok' }
+          
+        this.fibaroClient.getInfo()
+            .then((info) => {
+                //this.log('this.fibaroClient.getInfo()', info);
+                shadowAccessory.initAccessory(info);
+            })
+            .catch((err) => {
+            this.log("There was a problem getting value from Global Variable: SecuritySystem", ` - Err: ${err}`);
+            callback(err, null);
+            });
+        */
+        
         shadowAccessory.initAccessory();
         // Remove services existing in HomeKit, device no more present in Home Center
         shadowAccessory.removeNoMoreExistingServices();
@@ -185,7 +236,7 @@ class FibaroHC2 {
         shadowAccessory.addNewServices(this);
         // Register or update platform accessory
         shadowAccessory.registerUpdateAccessory(isNewAccessory, this.api);
-        this.log("Added/changed accessory: ", shadowAccessory.name);
+        this.log("\t==> Added/changed accessory: ", shadowAccessory.name);
     }
     removeAccessory(accessory) {
         this.log('Remove accessory', accessory.displayName);
