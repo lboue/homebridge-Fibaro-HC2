@@ -13,6 +13,7 @@
 //    limitations under the License.
 // Fibaro Home Center 2 Platform plugin for HomeBridge
 'use strict';
+const fibaro_api_1 = require("./fibaro-api");
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pluginName = 'homebridge-fibaro-hc2';
 exports.platformName = 'FibaroHC2';
@@ -28,8 +29,25 @@ class ShadowAccessory {
         this.name = device.name;
         this.roomID = device.roomID;
         this.services = services;
+        var type = device.type.replace(/com.fibaro./i, '');	// ex: com.fibaro.FGRM222 => FGRM222
+        this.model = type;
+        //this.serial = device.properties.serialNumber // TODO or "<unknown>"
+        this.serial = "HC2-016247"
+        
+        /* TODO get API INFO
+        https://manuals.fibaro.com/content/other/FIBARO_System_REST_API.pdf
+        http://192.168.1.56/api/settings/info
+        "serialNumber": "HC2-016247",
+        "hcName": "HC2-016247",
+        "mac": "00:22:4d:ab:a5:6b",
+        "softVersion": "4.140",
+        */
+        
+        //this.fibaroClient.getInfo()
+        
+        this.version = '4.140'
         this.accessory = null,
-            this.hapAccessory = hapAccessory;
+        this.hapAccessory = hapAccessory;
         this.hapService = hapService;
         this.hapCharacteristic = hapCharacteristic;
         this.platform = platform;
@@ -41,9 +59,12 @@ class ShadowAccessory {
     }
     initAccessory() {
         this.accessory.getService(this.hapService.AccessoryInformation)
-            .setCharacteristic(this.hapCharacteristic.Manufacturer, "IlCato")
-            .setCharacteristic(this.hapCharacteristic.Model, "HomeCenterBridgedAccessory")
-            .setCharacteristic(this.hapCharacteristic.SerialNumber, "<unknown>");
+            .setCharacteristic(this.hapCharacteristic.Manufacturer, "Fibaro")
+            //.setCharacteristic(this.hapCharacteristic.Model, "HomeCenterBridgedAccessory")
+            .setCharacteristic(this.hapCharacteristic.Model, this.model)
+            .setCharacteristic(Characteristic.FirmwareRevision, this.version)
+            //.setCharacteristic(this.hapCharacteristic.SerialNumber, "<unknown>");
+            .setCharacteristic(this.hapCharacteristic.SerialNumber, this.serial);
     }
     removeNoMoreExistingServices() {
         for (let t = 0; t < this.accessory.services.length; t++) {
@@ -147,13 +168,20 @@ class ShadowAccessory {
             case "com.fibaro.windowSensor":
                 ss = [new ShadowService(new hapService.ContactSensor(device.name), [hapCharacteristic.ContactSensorState])];
                 break;
+            /*
+                "type": "com.fibaro.FGFS101",
+                "baseType": "com.fibaro.floodSensor",
+            */
             case "com.fibaro.FGFS101":
+                ss = [new ShadowService(new hapService.LeakSensor(device.name), [hapCharacteristic.LeakDetected, hapCharacteristic.BatteryLevel])];
+                break;            
             case "com.fibaro.floodSensor":
-                ss = [new ShadowService(new hapService.LeakSensor(device.name), [hapCharacteristic.LeakDetected])];
+                ss = [new ShadowService(new hapService.LeakSensor(device.name), [hapCharacteristic.LeakDetected, hapCharacteristic.BatteryLevel])];
                 break;
             case "com.fibaro.FGSS001":
             case "com.fibaro.smokeSensor":
-                ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
+                //ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected, hapCharacteristic.BatteryLevel])];
+                ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected, hapCharacteristic.BatteryLevel])];
                 break;
             case "com.fibaro.FGCD001":
                 ss = [new ShadowService(new hapService.CarbonMonoxideSensor(device.name), [hapCharacteristic.CarbonMonoxideDetected, hapCharacteristic.CarbonMonoxideLevel, hapCharacteristic.CarbonMonoxidePeakLevel, hapCharacteristic.BatteryLevel])];
