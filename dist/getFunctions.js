@@ -47,7 +47,9 @@ class GetFunctions {
             [(new hapCharacteristic.CurrentDoorState()).UUID, this.getCurrentDoorState],
             [(new hapCharacteristic.TargetDoorState()).UUID, this.getCurrentDoorState],
             [(new hapCharacteristic.ObstructionDetected()).UUID, this.getObstructionDetected],
+			[(new hapCharacteristic.StatusFault()).UUID, this.getObstructionDetected],
             [(new hapCharacteristic.BatteryLevel()).UUID, this.getBatteryLevel]
+			
         ]);
         this.getCurrentSecuritySystemStateMapping = new Map([
             ["AwayArmed", this.hapCharacteristic.SecuritySystemCurrentState.AWAY_ARM],
@@ -100,8 +102,9 @@ class GetFunctions {
     }
     getCurrentPosition(callback, characteristic, service, IDs, properties) {
         let r = parseInt(properties.value);
+		this.platform.log("IDs:", IDs, "getCurrentPosition: ", r, "properties.dead:", properties.dead)
         if (r >= characteristic.props.minValue && r <= characteristic.props.maxValue) {
-            if (r == 99)
+            if (r == 98 || r == 99 )
                 r = 100;
         }
         else {
@@ -218,10 +221,17 @@ class GetFunctions {
         this.returnValue(properties.state == "Closed" ? this.hapCharacteristic.CurrentDoorState.CLOSED : this.hapCharacteristic.CurrentDoorState.OPEN, callback, characteristic);
     }
     getObstructionDetected(callback, characteristic, service, IDs, properties) {
+        this.platform.log("getObstructionDetected")
         this.returnValue(0, callback, characteristic);
+		// TODO
+    }
+    getStatusFault(callback, characteristic, service, IDs, properties) {
+        this.returnValue(1, callback, characteristic);
+		// TODO
     }
     getBatteryLevel(callback, characteristic, service, IDs, properties) {
         let r = parseFloat(properties.batteryLevel);
+        this.platform.log("[getBatteryLevel] properties.batteryLevel:", properties.batteryLevel)
         this.returnValue(r, callback, characteristic);
     }
     getSecuritySystemTargetState(callback, characteristic, service, IDs, securitySystemStatus) {
