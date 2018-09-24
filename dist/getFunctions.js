@@ -47,7 +47,9 @@ class GetFunctions {
             [(new hapCharacteristic.CurrentDoorState()).UUID, this.getCurrentDoorState],
             [(new hapCharacteristic.TargetDoorState()).UUID, this.getCurrentDoorState],
             [(new hapCharacteristic.ObstructionDetected()).UUID, this.getObstructionDetected],
-            [(new hapCharacteristic.BatteryLevel()).UUID, this.getBatteryLevel]
+            [(new hapCharacteristic.BatteryLevel()).UUID, this.getBatteryLevel],
+            [(new hapCharacteristic.StatusLowBattery()).UUID, this.getStatusLowBattery],
+            [(new hapCharacteristic.ChargingState()).UUID, this.getChargingState]
         ]);
         this.getCurrentSecuritySystemStateMapping = new Map([
             ["AwayArmed", this.hapCharacteristic.SecuritySystemCurrentState.AWAY_ARM],
@@ -223,6 +225,12 @@ class GetFunctions {
     getBatteryLevel(callback, characteristic, service, IDs, properties) {
         let r = parseFloat(properties.batteryLevel);
         this.returnValue(r, callback, characteristic);
+    }
+    getStatusLowBattery(callback, characteristic, service, IDs, properties) {
+        this.returnValue(0, callback, characteristic);
+    }
+    getChargingState(callback, characteristic, service, IDs, properties) {
+        this.returnValue(0, callback, characteristic);
     }
     getSecuritySystemTargetState(callback, characteristic, service, IDs, securitySystemStatus) {
         let r;

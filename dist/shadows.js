@@ -14,7 +14,6 @@
 // Fibaro Home Center 2 Platform plugin for HomeBridge
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-//const util = require('util')
 exports.pluginName = 'homebridge-fibaro-hc2';
 exports.platformName = 'FibaroHC2';
 class ShadowService {
@@ -197,7 +196,7 @@ class ShadowAccessory {
                 //this.log(util.inspect(batService))
                 //this.log("\t[', createShadowAccessory, '] \tdebug", ss);
                 ss = smokeSensorServices;
-                // Avant
+                // Previous code
                 //ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
                 break;
             case "com.fibaro.FGCD001":

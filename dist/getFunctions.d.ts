@@ -26,6 +26,8 @@ export declare class GetFunctions {
     getCurrentDoorState(callback: any, characteristic: any, service: any, IDs: any, properties: any): void;
     getObstructionDetected(callback: any, characteristic: any, service: any, IDs: any, properties: any): void;
     getBatteryLevel(callback: any, characteristic: any, service: any, IDs: any, properties: any): void;
+    getStatusLowBattery(callback: any, characteristic: any, service: any, IDs: any, properties: any): void;
+    getChargingState(callback: any, characteristic: any, service: any, IDs: any, properties: any): void;
     getSecuritySystemTargetState(callback: any, characteristic: any, service: any, IDs: any, securitySystemStatus: any): void;
     updateHomeKitColorFromHomeCenter(color: any, service: any): {
         h: number;

@@ -226,7 +226,7 @@ export class ShadowAccessory {
                 //this.log("\t[', createShadowAccessory, '] \tdebug", ss);
                 ss = smokeSensorServices;
                 
-                // Avant
+                // Previous code
 				//ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
 				break;
 			case "com.fibaro.FGCD001":
