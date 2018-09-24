@@ -96,7 +96,7 @@ class ShadowAccessory {
     static createShadowAccessory(device, siblings, hapAccessory, hapService, hapCharacteristic, platform) {
         let ss;
         let controlService, controlCharacteristics;
-        let batService;
+        //let batService
         switch (device.type) {
             case "com.fibaro.multilevelSwitch":
             case "com.fibaro.FGD212":
@@ -132,7 +132,7 @@ class ShadowAccessory {
             case "com.fibaro.FGR221":
             case "com.fibaro.FGRM222":
             case "com.fibaro.rollerShutter":
-                ss = [new ShadowService(new hapService.WindowCovering(device.name), [hapCharacteristic.CurrentPosition, hapCharacteristic.TargetPosition, hapCharacteristic.PositionState])];
+                ss = [new ShadowService(new hapService.WindowCovering(device.name), [hapCharacteristic.CurrentPosition, hapCharacteristic.TargetPosition, hapCharacteristic.PositionState, hapCharacteristic.ObstructionDetected])];
                 break;
             case "com.fibaro.FGMS001":
             case "com.fibaro.FGMS001v2":
@@ -163,15 +163,18 @@ class ShadowAccessory {
                 //this.log(util.inspect(batService))
                 console.log("find com.fibaro.FGSS001");
             case "com.fibaro.smokeSensor":
-                // # Method2                
+                /*
+                                // # Method2
                 // Declare an array of <ShadowService>
                 //let smokeSensorServices: Array<ShadowService> = new Array();
                 let smokeSensorServices = new Array();
                 //let smokeSensorService: ShadowService;
+                
                 // Add battery service
                 batService = [new ShadowService(new hapService.BatteryService(device.name), [hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState])];
                 //this.log('inspect batService:', util.inspect(batService))
                 console.log(JSON.stringify(batService, null, 4));
+                             
                 // Add battery Characteristic
                 /*var lowBatCharacteristic = batService.getCharacteristic(hapCharacteristic.StatusLowBattery);
                 var batLevelCharacteristic = batService.getCharacteristic(hapCharacteristic.BatteryLevel);
@@ -182,22 +185,27 @@ class ShadowAccessory {
                 lowBatCharacteristic.updateValue(lowBattery);
                 batLevelCharacteristic.updateValue(batteryLevel);
                 chargingStateCharacteristic.updateValue(chargingState);
-                */
+                               
                 //batCharacteristics = [hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState];
+                
                 // Add SmokeSensor service
                 let SmokeSensorService = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
                 //this.log('inspect batService:', util.inspect(SmokeSensorService))
                 console.log(JSON.stringify(SmokeSensorService, null, 4));
                 //ss = [new ShadowService(batService, batCharacteristics)];
+                
                 // Push services in the array
                 smokeSensorServices.push(batService);
                 smokeSensorServices.push(SmokeSensorService);
+                
                 // Return an arroy of <ShadowService>
                 //this.log(util.inspect(batService))
                 //this.log("\t[', createShadowAccessory, '] \tdebug", ss);
                 ss = smokeSensorServices;
+                */
                 // Previous code
                 //ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
+                ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected, hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState])];
                 break;
             case "com.fibaro.FGCD001":
                 ss = [new ShadowService(new hapService.CarbonMonoxideSensor(device.name), [hapCharacteristic.CarbonMonoxideDetected, hapCharacteristic.CarbonMonoxideLevel, hapCharacteristic.CarbonMonoxidePeakLevel, hapCharacteristic.BatteryLevel])];

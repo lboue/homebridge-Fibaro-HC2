@@ -225,17 +225,18 @@ export class GetFunctions {
 		this.returnValue(properties.state == "Closed" ?  this.hapCharacteristic.CurrentDoorState.CLOSED : this.hapCharacteristic.CurrentDoorState.OPEN, callback, characteristic);
 	}
 	getObstructionDetected(callback, characteristic, service, IDs, properties) {
-		this.returnValue(0, callback, characteristic);
+		this.returnValue(true, callback, characteristic);
 	}
 	getBatteryLevel(callback, characteristic, service, IDs, properties) {
-		let r = parseFloat(properties.batteryLevel);
+		//let r = parseFloat(properties.batteryLevel);
+        let r = 50.0
 		this.returnValue(r, callback, characteristic);
 	}
 	getStatusLowBattery(callback, characteristic, service, IDs, properties) {
-		this.returnValue(0, callback, characteristic);
+		this.returnValue(1, callback, characteristic);      // 1: Low battery
 	}
 	getChargingState(callback, characteristic, service, IDs, properties) {
-		this.returnValue(0, callback, characteristic);
+		this.returnValue(2, callback, characteristic);      // 2: Not chargeable
 	}
 	getSecuritySystemTargetState(callback, characteristic, service, IDs, securitySystemStatus) {
 		let r;

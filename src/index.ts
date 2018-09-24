@@ -182,7 +182,7 @@ class FibaroHC2 {
 		devices.map((s, i, a) => {
 			if (s.visible == true && s.name.charAt(0) != "_") {
 				let siblings = this.findSiblingDevices(s, a);
-                this.log('DEBUG siblings:', siblings);
+                //this.log('DEBUG siblings:', siblings);
 				this.addAccessory(ShadowAccessory.createShadowAccessory(s, siblings, Accessory, Service, Characteristic, this));
 			}
 		});

@@ -119,7 +119,7 @@ export class ShadowAccessory {
   	static createShadowAccessory(device, siblings, hapAccessory, hapService, hapCharacteristic, platform) {
 		let ss;
 		let controlService, controlCharacteristics;
-        let batService
+        //let batService
 
 		switch(device.type) {
   			case "com.fibaro.multilevelSwitch":
@@ -156,7 +156,7 @@ export class ShadowAccessory {
 			case "com.fibaro.FGR221":
 			case "com.fibaro.FGRM222":
 			case "com.fibaro.rollerShutter":
-				ss = [new ShadowService(new hapService.WindowCovering(device.name), [hapCharacteristic.CurrentPosition, hapCharacteristic.TargetPosition, hapCharacteristic.PositionState])];
+				ss = [new ShadowService(new hapService.WindowCovering(device.name), [hapCharacteristic.CurrentPosition, hapCharacteristic.TargetPosition, hapCharacteristic.PositionState, hapCharacteristic.ObstructionDetected])];
 				break;
 			case "com.fibaro.FGMS001":
 			case "com.fibaro.FGMS001v2":
@@ -187,6 +187,10 @@ export class ShadowAccessory {
                 //this.log(util.inspect(batService))
                 console.log("find com.fibaro.FGSS001");
 			case "com.fibaro.smokeSensor":
+            
+            
+            
+                /*
                                 // # Method2                
                 // Declare an array of <ShadowService>
                 //let smokeSensorServices: Array<ShadowService> = new Array();
@@ -208,7 +212,7 @@ export class ShadowAccessory {
                 lowBatCharacteristic.updateValue(lowBattery);
                 batLevelCharacteristic.updateValue(batteryLevel);
                 chargingStateCharacteristic.updateValue(chargingState);
-                */                
+                               
                 //batCharacteristics = [hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState];
                 
                 // Add SmokeSensor service
@@ -225,9 +229,11 @@ export class ShadowAccessory {
                 //this.log(util.inspect(batService))
                 //this.log("\t[', createShadowAccessory, '] \tdebug", ss);
                 ss = smokeSensorServices;
-                
+                */ 
                 // Previous code
 				//ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
+                ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected, hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState])];
+                
 				break;
 			case "com.fibaro.FGCD001":
 				ss = [new ShadowService(new hapService.CarbonMonoxideSensor(device.name), [hapCharacteristic.CarbonMonoxideDetected, hapCharacteristic.CarbonMonoxideLevel, hapCharacteristic.CarbonMonoxidePeakLevel, hapCharacteristic.BatteryLevel])];
@@ -289,6 +295,8 @@ export class ShadowAccessory {
   			return undefined;
   		return new ShadowAccessory(device, ss, hapAccessory, hapService, hapCharacteristic, platform);
   	}
+    
+    
 	static createShadowSecuritySystemAccessory(device, hapAccessory, hapService, hapCharacteristic, platform) {
 		let service = new ShadowService(new hapService.SecuritySystem("FibaroSecuritySystem"), [hapCharacteristic.SecuritySystemCurrentState, hapCharacteristic.SecuritySystemTargetState]);
 		service.controlService.subtype = "0--";
