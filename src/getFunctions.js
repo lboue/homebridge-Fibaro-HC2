@@ -47,7 +47,9 @@ var GetFunctions = /** @class */ (function () {
             [(new hapCharacteristic.CurrentDoorState()).UUID, this.getCurrentDoorState],
             [(new hapCharacteristic.TargetDoorState()).UUID, this.getCurrentDoorState],
             [(new hapCharacteristic.ObstructionDetected()).UUID, this.getObstructionDetected],
-            [(new hapCharacteristic.BatteryLevel()).UUID, this.getBatteryLevel]
+            [(new hapCharacteristic.BatteryLevel()).UUID, this.getBatteryLevel],
+            [(new hapCharacteristic.StatusLowBattery()).UUID, this.getStatusLowBattery],
+            [(new hapCharacteristic.ChargingState()).UUID, this.getChargingState]
         ]);
         this.getCurrentSecuritySystemStateMapping = new Map([
             ["AwayArmed", this.hapCharacteristic.SecuritySystemCurrentState.AWAY_ARM],
@@ -222,11 +224,18 @@ var GetFunctions = /** @class */ (function () {
     };
     GetFunctions.prototype.getBatteryLevel = function (callback, characteristic, service, IDs, properties) {
         var r = parseFloat(properties.batteryLevel);
-        this.platform.log("properties.batteryLevel: ", properties.batteryLevel);
+        console.log(properties.batteryLevel); 
         console.log(JSON.stringify(characteristic, null, 4));
-        this.returnValue(r, callback, characteristic);
 
+        this.returnValue(r, callback, characteristic);
     };
+    GetFunctions.prototype.getStatusLowBattery = function (callback, characteristic, service, IDs, properties) {
+        this.returnValue(1, callback, characteristic); // 1: Low battery
+    }
+    GetFunctions.prototype.getChargingState = function (callback, characteristic, service, IDs, properties) {
+        this.returnValue(2, callback, characteristic); // 2: Not chargeable
+    }
+    
     GetFunctions.prototype.getSecuritySystemTargetState = function (callback, characteristic, service, IDs, securitySystemStatus) {
         var r;
         if (characteristic.UUID == (new this.hapCharacteristic.SecuritySystemCurrentState()).UUID) {

@@ -223,12 +223,15 @@ class GetFunctions {
         this.returnValue(true, callback, characteristic);
     }
     getBatteryLevel(callback, characteristic, service, IDs, properties) {
-        //let r = parseFloat(properties.batteryLevel);
-        let r = 50.0;
+        let r = parseFloat(properties.batteryLevel);
         this.returnValue(r, callback, characteristic);
     }
     getStatusLowBattery(callback, characteristic, service, IDs, properties) {
-        this.returnValue(1, callback, characteristic); // 1: Low battery
+        let r = parseFloat(properties.batteryLevel);
+        if (r <= 50)
+            this.returnValue(1, callback, characteristic); // 1: Low battery
+        else
+            this.returnValue(0, callback, characteristic); // 0: OK
     }
     getChargingState(callback, characteristic, service, IDs, properties) {
         this.returnValue(2, callback, characteristic); // 2: Not chargeable
