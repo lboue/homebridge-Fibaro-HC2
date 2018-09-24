@@ -13,10 +13,10 @@
 //    limitations under the License.
 // Fibaro Home Center 2 Platform plugin for HomeBridge
 'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-const setFunctions_1 = require("./setFunctions");
-class GetFunctions {
-    constructor(hapCharacteristic, platform) {
+exports.__esModule = true;
+var setFunctions_1 = require("./setFunctions");
+var GetFunctions = /** @class */ (function () {
+    function GetFunctions(hapCharacteristic, platform) {
         this.hapCharacteristic = hapCharacteristic;
         this.platform = platform;
         this.getFunctionsMapping = new Map([
@@ -63,29 +63,29 @@ class GetFunctions {
             ["StayArmed", this.hapCharacteristic.SecuritySystemTargetState.STAY_ARM]
         ]);
     }
-    returnValue(r, callback, characteristic) {
+    GetFunctions.prototype.returnValue = function (r, callback, characteristic) {
         if (callback)
             callback(undefined, r);
         else
             characteristic.updateValue(r);
-    }
+    };
     // Boolean getter
-    getBool(callback, characteristic, service, IDs, properties) {
-        let v = properties.value;
-        let r = (v == "true" || v == "false") ?
+    GetFunctions.prototype.getBool = function (callback, characteristic, service, IDs, properties) {
+        var v = properties.value;
+        var r = (v == "true" || v == "false") ?
             ((v == "false") ? false : true) :
             ((parseInt(v) == 0) ? false : true);
         this.returnValue(r, callback, characteristic);
-    }
+    };
     // Float getter
-    getFloat(callback, characteristic, service, IDs, properties) {
-        let r = parseFloat(properties.value);
+    GetFunctions.prototype.getFloat = function (callback, characteristic, service, IDs, properties) {
+        var r = parseFloat(properties.value);
         this.returnValue(r, callback, characteristic);
-    }
-    getBrightness(callback, characteristic, service, IDs, properties) {
-        let r;
+    };
+    GetFunctions.prototype.getBrightness = function (callback, characteristic, service, IDs, properties) {
+        var r;
         if (service.HSBValue != null) {
-            let hsv = this.updateHomeKitColorFromHomeCenter(properties.color, service);
+            var hsv = this.updateHomeKitColorFromHomeCenter(properties.color, service);
             r = Math.round(hsv.v);
         }
         else {
@@ -94,12 +94,12 @@ class GetFunctions {
                 r = 100;
         }
         this.returnValue(r, callback, characteristic);
-    }
-    getPositionState(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getPositionState = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(this.hapCharacteristic.PositionState.STOPPED, callback, characteristic);
-    }
-    getCurrentPosition(callback, characteristic, service, IDs, properties) {
-        let r = parseInt(properties.value);
+    };
+    GetFunctions.prototype.getCurrentPosition = function (callback, characteristic, service, IDs, properties) {
+        var r = parseInt(properties.value);
         if (r >= characteristic.props.minValue && r <= characteristic.props.maxValue) {
             if (r == 99)
                 r = 100;
@@ -108,54 +108,54 @@ class GetFunctions {
             r = characteristic.props.minValue;
         }
         this.returnValue(r, callback, characteristic);
-    }
-    getTargetTemperature(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getTargetTemperature = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(parseFloat(properties.targetLevel), callback, characteristic);
-    }
-    getContactSensorState(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getContactSensorState = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(properties.value == "false" ? this.hapCharacteristic.ContactSensorState.CONTACT_DETECTED : this.hapCharacteristic.ContactSensorState.CONTACT_NOT_DETECTED, callback, characteristic);
-    }
-    getLeakDetected(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getLeakDetected = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(properties.value == "true" ? this.hapCharacteristic.LeakDetected.LEAK_DETECTED : this.hapCharacteristic.LeakDetected.LEAK_NOT_DETECTED, callback, characteristic);
-    }
-    getSmokeDetected(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getSmokeDetected = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(properties.value == "true" ? this.hapCharacteristic.SmokeDetected.SMOKE_DETECTED : this.hapCharacteristic.SmokeDetected.SMOKE_NOT_DETECTED, callback, characteristic);
-    }
-    getCarbonMonoxideDetected(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getCarbonMonoxideDetected = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(properties.value == "true" ? this.hapCharacteristic.CarbonMonoxideDetected.CO_LEVELS_ABNORMAL : this.hapCharacteristic.CarbonMonoxideDetected.CO_LEVELS_NORMAL, callback, characteristic);
-    }
-    getOutletInUse(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getOutletInUse = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(parseFloat(properties.power) > 1.0 ? true : false, callback, characteristic);
-    }
-    getLockCurrentState(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getLockCurrentState = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(properties.value == "true" ? this.hapCharacteristic.LockCurrentState.SECURED : this.hapCharacteristic.LockCurrentState.UNSECURED, callback, characteristic);
-    }
-    getCurrentHeatingCoolingState(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getCurrentHeatingCoolingState = function (callback, characteristic, service, IDs, properties) {
+        var _this = this;
         if (service.operatingModeId) { // Operating mode is availble on Home Center
             this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
-                .then((properties) => {
+                .then(function (properties) {
                 switch (properties.mode) {
                     case "0": // OFF
-                        this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.OFF, callback, characteristic);
+                        _this.returnValue(_this.hapCharacteristic.CurrentHeatingCoolingState.OFF, callback, characteristic);
                         break;
                     case "1": // HEAT
-                        this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
+                        _this.returnValue(_this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
                         break;
                     case "2": // COOL
-                        this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.COOL, callback, characteristic);
+                        _this.returnValue(_this.hapCharacteristic.CurrentHeatingCoolingState.COOL, callback, characteristic);
                         break;
                     default:
                         break;
                 }
-            })
-                .catch((err) => {
-                this.platform.log("There was a problem getting value from: ", `${service.operatingModeId} - Err: ${err}`);
+            })["catch"](function (err) {
+                _this.platform.log("There was a problem getting value from: ", service.operatingModeId + " - Err: " + err);
                 callback(err, null);
             });
         }
         else {
             if (this.platform.config.enablecoolingstatemanagemnt == "on") { // Simulated operating mode
-                let t = parseFloat(properties.value);
+                var t = parseFloat(properties.value);
                 if (t <= setFunctions_1.lowestTemp)
                     this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.OFF, callback, characteristic);
                 else
@@ -165,36 +165,36 @@ class GetFunctions {
                 this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
             }
         }
-    }
-    getTargetHeatingCoolingState(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getTargetHeatingCoolingState = function (callback, characteristic, service, IDs, properties) {
+        var _this = this;
         if (service.operatingModeId) { // Operating mode is availble on Home Center
             this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
-                .then((properties) => {
+                .then(function (properties) {
                 switch (properties.mode) {
                     case "0": // OFF
-                        this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
+                        _this.returnValue(_this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
                         break;
                     case "1": // HEAT
-                        this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.HEAT, callback, characteristic);
+                        _this.returnValue(_this.hapCharacteristic.TargetHeatingCoolingState.HEAT, callback, characteristic);
                         break;
                     case "2": // COOL
-                        this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.COOL, callback, characteristic);
+                        _this.returnValue(_this.hapCharacteristic.TargetHeatingCoolingState.COOL, callback, characteristic);
                         break;
                     case "10": // AUTO
-                        this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.AUTO, callback, characteristic);
+                        _this.returnValue(_this.hapCharacteristic.TargetHeatingCoolingState.AUTO, callback, characteristic);
                         break;
                     default:
                         break;
                 }
-            })
-                .catch((err) => {
-                this.platform.log("There was a problem getting value from: ", `${service.operatingModeId} - Err: ${err}`);
+            })["catch"](function (err) {
+                _this.platform.log("There was a problem getting value from: ", service.operatingModeId + " - Err: " + err);
                 callback(err, null);
             });
         }
         else {
             if (this.platform.config.enablecoolingstatemanagemnt == "on") {
-                let t = parseFloat(properties.targetLevel);
+                var t = parseFloat(properties.targetLevel);
                 if (t <= setFunctions_1.lowestTemp)
                     this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
                 else
@@ -204,28 +204,31 @@ class GetFunctions {
                 this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
             }
         }
-    }
-    getTemperatureDisplayUnits(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getTemperatureDisplayUnits = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(this.hapCharacteristic.TemperatureDisplayUnits.CELSIUS, callback, characteristic);
-    }
-    getHue(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getHue = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(Math.round(this.updateHomeKitColorFromHomeCenter(properties.color, service).h), callback, characteristic);
-    }
-    getSaturation(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getSaturation = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(Math.round(this.updateHomeKitColorFromHomeCenter(properties.color, service).s), callback, characteristic);
-    }
-    getCurrentDoorState(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getCurrentDoorState = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(properties.state == "Closed" ? this.hapCharacteristic.CurrentDoorState.CLOSED : this.hapCharacteristic.CurrentDoorState.OPEN, callback, characteristic);
-    }
-    getObstructionDetected(callback, characteristic, service, IDs, properties) {
+    };
+    GetFunctions.prototype.getObstructionDetected = function (callback, characteristic, service, IDs, properties) {
         this.returnValue(0, callback, characteristic);
-    }
-    getBatteryLevel(callback, characteristic, service, IDs, properties) {
-        let r = parseFloat(properties.batteryLevel);
+    };
+    GetFunctions.prototype.getBatteryLevel = function (callback, characteristic, service, IDs, properties) {
+        var r = parseFloat(properties.batteryLevel);
+        this.platform.log("properties.batteryLevel: ", properties.batteryLevel);
+        console.log(JSON.stringify(characteristic, null, 4));
         this.returnValue(r, callback, characteristic);
-    }
-    getSecuritySystemTargetState(callback, characteristic, service, IDs, securitySystemStatus) {
-        let r;
+
+    };
+    GetFunctions.prototype.getSecuritySystemTargetState = function (callback, characteristic, service, IDs, securitySystemStatus) {
+        var r;
         if (characteristic.UUID == (new this.hapCharacteristic.SecuritySystemCurrentState()).UUID) {
             r = this.getCurrentSecuritySystemStateMapping.get(securitySystemStatus.value);
         }
@@ -235,24 +238,24 @@ class GetFunctions {
         if (r == undefined)
             r = this.hapCharacteristic.SecuritySystemTargetState.DISARMED;
         this.returnValue(r, callback, characteristic);
-    }
-    updateHomeKitColorFromHomeCenter(color, service) {
-        let colors = color.split(",");
-        let r = parseInt(colors[0]);
-        let g = parseInt(colors[1]);
-        let b = parseInt(colors[2]);
-        let w = parseInt(colors[3]);
+    };
+    GetFunctions.prototype.updateHomeKitColorFromHomeCenter = function (color, service) {
+        var colors = color.split(",");
+        var r = parseInt(colors[0]);
+        var g = parseInt(colors[1]);
+        var b = parseInt(colors[2]);
+        var w = parseInt(colors[3]);
         service.RGBValue.red = r;
         service.RGBValue.green = g;
         service.RGBValue.blue = b;
         service.RGBValue.white = w;
-        let hsv = this.RGBtoHSV(r, g, b, w);
+        var hsv = this.RGBtoHSV(r, g, b, w);
         service.HSBValue.hue = hsv.h;
         service.HSBValue.saturation = hsv.s;
         service.HSBValue.brightness = hsv.v;
         return hsv;
-    }
-    RGBtoHSV(r, g, b, w) {
+    };
+    GetFunctions.prototype.RGBtoHSV = function (r, g, b, w) {
         if (arguments.length === 1) {
             g = r.g, b = r.b, r = r.r;
         }
@@ -279,7 +282,7 @@ class GetFunctions {
             s: s * 100.0,
             v: v * 100.0
         };
-    }
-}
+    };
+    return GetFunctions;
+}());
 exports.GetFunctions = GetFunctions;
-//# sourceMappingURL=getFunctions.js.map

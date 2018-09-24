@@ -1,22 +1,47 @@
 {
-  "name": "homebridge-fibaro-hc2",
-  "version": "2.1.6",
+  "_from": "homebridge-fibaro-hc2",
+  "_id": "homebridge-fibaro-hc2@2.1.6",
+  "_inBundle": false,
+  "_integrity": "sha512-Sdlie/myVGhQyvYtX6UNj3hnrbNlO87hI6yZX3lh4pJhrmWc13+1ghQJILYDDrNtdxTo0r+ep6n75fOxHo6xFg==",
+  "_location": "/homebridge-fibaro-hc2",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "homebridge-fibaro-hc2",
+    "name": "homebridge-fibaro-hc2",
+    "escapedName": "homebridge-fibaro-hc2",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/homebridge-fibaro-hc2/-/homebridge-fibaro-hc2-2.1.6.tgz",
+  "_shasum": "0e8256742ad66276236028f4e3a177c54ef95fec",
+  "_spec": "homebridge-fibaro-hc2",
+  "_where": "/usr/lib/node_modules/homebridge-fibaro-hc2",
+  "author": {
+    "name": "ilcato"
+  },
+  "bugs": {
+    "url": "https://github.com/ilcato/homebridge-Fibaro-HC2/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "request": "^2.65.0",
+    "typescript": "^2.2.2"
+  },
+  "deprecated": false,
   "description": "Homebridge plugin for Fibaro Home Center 2 ",
-  "note": "peerDependencies is hardcoded to peerDepdendencies in homebridge!!!",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "prepare": "tsc",
-    "start": "echo \"Error: configure and run homebridge to start\" && exit 1"
-  },
+  "devDependencies": {},
   "engines": {
-    "node": ">7.0.0",
-    "homebridge": ">=0.4.0"
+    "homebridge": ">=0.4.0",
+    "node": ">7.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ilcato/homebridge-Fibaro-HC2.git"
-  },
+  "homepage": "https://github.com/ilcato/homebridge-Fibaro-HC2",
   "keywords": [
     "homebridge-plugin",
     "Fibaro",
@@ -25,15 +50,18 @@
     "z-wave",
     "Siri"
   ],
-  "dependencies": {
-    "request": "^2.65.0",
-    "typescript": "^2.2.2"
-  },
-  "devDependencies": {},
-  "author": "ilcato",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/ilcato/homebridge-Fibaro-HC2/issues"
+  "main": "dist/index.js",
+  "name": "homebridge-fibaro-hc2",
+  "note": "peerDependencies is hardcoded to peerDepdendencies in homebridge!!!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilcato/homebridge-Fibaro-HC2.git"
   },
-  "homepage": "https://github.com/ilcato/homebridge-Fibaro-HC2"
+  "scripts": {
+    "prepare": "tsc",
+    "start": "echo \"Error: configure and run homebridge to start\" && exit 1"
+  },
+  "types": "dist/index.d.ts",
+  "version": "2.1.6"
 }

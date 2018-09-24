@@ -13,8 +13,8 @@
 //    limitations under the License.
 // Fibaro Home Center 2 Platform plugin for HomeBridge
 'use strict';
-const fibaro_api_1 = require("./fibaro-api");
 Object.defineProperty(exports, "__esModule", { value: true });
+//const util = require('util')
 exports.pluginName = 'homebridge-fibaro-hc2';
 exports.platformName = 'FibaroHC2';
 class ShadowService {
@@ -29,29 +29,13 @@ class ShadowAccessory {
         this.name = device.name;
         this.roomID = device.roomID;
         this.services = services;
-        var type = device.type.replace(/com.fibaro./i, '');	// ex: com.fibaro.FGRM222 => FGRM222
-        this.model = type;
-        //this.serial = device.properties.serialNumber // TODO or "<unknown>"
-        this.serial = "HC2-016247"
-        
-        /* TODO get API INFO
-        https://manuals.fibaro.com/content/other/FIBARO_System_REST_API.pdf
-        http://192.168.1.56/api/settings/info
-        "serialNumber": "HC2-016247",
-        "hcName": "HC2-016247",
-        "mac": "00:22:4d:ab:a5:6b",
-        "softVersion": "4.140",
-        */
-        
-        //this.fibaroClient.getInfo()
-        
-        this.version = '4.140'
         this.accessory = null,
-        this.hapAccessory = hapAccessory;
+            this.hapAccessory = hapAccessory;
         this.hapService = hapService;
         this.hapCharacteristic = hapCharacteristic;
         this.platform = platform;
         this.isSecuritySystem = isSecurritySystem ? isSecurritySystem : false;
+        console.log(JSON.stringify(services, null, 4)); //DEBUG
         for (let i = 0; i < services.length; i++) {
             if (services[i].controlService.subtype == undefined)
                 services[i].controlService.subtype = device.id + "--"; // "DEVICE_ID-VIRTUAL_BUTTON_ID-RGB_MARKER
@@ -59,12 +43,9 @@ class ShadowAccessory {
     }
     initAccessory() {
         this.accessory.getService(this.hapService.AccessoryInformation)
-            .setCharacteristic(this.hapCharacteristic.Manufacturer, "Fibaro")
-            //.setCharacteristic(this.hapCharacteristic.Model, "HomeCenterBridgedAccessory")
-            .setCharacteristic(this.hapCharacteristic.Model, this.model)
-            .setCharacteristic(Characteristic.FirmwareRevision, this.version)
-            //.setCharacteristic(this.hapCharacteristic.SerialNumber, "<unknown>");
-            .setCharacteristic(this.hapCharacteristic.SerialNumber, this.serial);
+            .setCharacteristic(this.hapCharacteristic.Manufacturer, "IlCato")
+            .setCharacteristic(this.hapCharacteristic.Model, "HomeCenterBridgedAccessory")
+            .setCharacteristic(this.hapCharacteristic.SerialNumber, "<unknown>");
     }
     removeNoMoreExistingServices() {
         for (let t = 0; t < this.accessory.services.length; t++) {
@@ -116,6 +97,7 @@ class ShadowAccessory {
     static createShadowAccessory(device, siblings, hapAccessory, hapService, hapCharacteristic, platform) {
         let ss;
         let controlService, controlCharacteristics;
+        let batService;
         switch (device.type) {
             case "com.fibaro.multilevelSwitch":
             case "com.fibaro.FGD212":
@@ -168,20 +150,55 @@ class ShadowAccessory {
             case "com.fibaro.windowSensor":
                 ss = [new ShadowService(new hapService.ContactSensor(device.name), [hapCharacteristic.ContactSensorState])];
                 break;
-            /*
-                "type": "com.fibaro.FGFS101",
-                "baseType": "com.fibaro.floodSensor",
-            */
             case "com.fibaro.FGFS101":
-                ss = [new ShadowService(new hapService.LeakSensor(device.name), [hapCharacteristic.LeakDetected, hapCharacteristic.BatteryLevel])];
-                break;            
+                console.log("find com.fibaro.FGFS101");
             case "com.fibaro.floodSensor":
-                ss = [new ShadowService(new hapService.LeakSensor(device.name), [hapCharacteristic.LeakDetected, hapCharacteristic.BatteryLevel])];
+                //ss = [new ShadowService(new hapService.LeakSensor(device.name), [hapCharacteristic.LeakDetected])];
+                console.log("find com.fibaro.floodSensor");
+                ss = [new ShadowService(new hapService.LeakSensor(device.name), [hapCharacteristic.LeakDetected, hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState])];
+                console.log(JSON.stringify(ss, null, 4));
                 break;
             case "com.fibaro.FGSS001":
+                // Add battery service
+                //batService = [new ShadowService(new hapService.BatteryService(device.name), [hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState])];
+                //this.log(util.inspect(batService))
+                console.log("find com.fibaro.FGSS001");
             case "com.fibaro.smokeSensor":
-                //ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected, hapCharacteristic.BatteryLevel])];
-                ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected, hapCharacteristic.BatteryLevel])];
+                // # Method2                
+                // Declare an array of <ShadowService>
+                //let smokeSensorServices: Array<ShadowService> = new Array();
+                let smokeSensorServices = new Array();
+                //let smokeSensorService: ShadowService;
+                // Add battery service
+                batService = [new ShadowService(new hapService.BatteryService(device.name), [hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState])];
+                //this.log('inspect batService:', util.inspect(batService))
+                console.log(JSON.stringify(batService, null, 4));
+                // Add battery Characteristic
+                /*var lowBatCharacteristic = batService.getCharacteristic(hapCharacteristic.StatusLowBattery);
+                var batLevelCharacteristic = batService.getCharacteristic(hapCharacteristic.BatteryLevel);
+                var chargingStateCharacteristic = batService.getCharacteristic(hapCharacteristic.ChargingState);
+                let lowBattery = false;
+                let chargingState = false;
+                let batteryLevel = 10;
+                lowBatCharacteristic.updateValue(lowBattery);
+                batLevelCharacteristic.updateValue(batteryLevel);
+                chargingStateCharacteristic.updateValue(chargingState);
+                */
+                //batCharacteristics = [hapCharacteristic.StatusLowBattery, hapCharacteristic.BatteryLevel, hapCharacteristic.ChargingState];
+                // Add SmokeSensor service
+                let SmokeSensorService = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
+                //this.log('inspect batService:', util.inspect(SmokeSensorService))
+                console.log(JSON.stringify(SmokeSensorService, null, 4));
+                //ss = [new ShadowService(batService, batCharacteristics)];
+                // Push services in the array
+                smokeSensorServices.push(batService);
+                smokeSensorServices.push(SmokeSensorService);
+                // Return an arroy of <ShadowService>
+                //this.log(util.inspect(batService))
+                //this.log("\t[', createShadowAccessory, '] \tdebug", ss);
+                ss = smokeSensorServices;
+                // Avant
+                //ss = [new ShadowService(new hapService.SmokeSensor(device.name), [hapCharacteristic.SmokeDetected])];
                 break;
             case "com.fibaro.FGCD001":
                 ss = [new ShadowService(new hapService.CarbonMonoxideSensor(device.name), [hapCharacteristic.CarbonMonoxideDetected, hapCharacteristic.CarbonMonoxideLevel, hapCharacteristic.CarbonMonoxidePeakLevel, hapCharacteristic.BatteryLevel])];
