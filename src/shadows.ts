@@ -32,6 +32,8 @@ export class ShadowService {
 export class ShadowAccessory {
 
 	name: string;
+	model: string;
+	serial: string;
 	roomID: string;
 	services: ShadowService[];
 	accessory: any;
@@ -43,6 +45,12 @@ export class ShadowAccessory {
 	
 	constructor(device: any, services: ShadowService[], hapAccessory: any, hapService: any, hapCharacteristic: any, platform, isSecurritySystem?: boolean) {
 		this.name = device.name;
+        this.model = device.type;
+        this.serial = device.properties.serialNumber;
+        
+        if (this.model && this.model !="") {
+            this.model = device.type.replace(/com.fibaro./i, ''); // ex: com.fibaro.FGRM222 => FGRM222;
+        }
 		this.roomID = device.roomID;
 		this.services = services;
 		this.accessory = null,
@@ -59,9 +67,16 @@ export class ShadowAccessory {
 
   	initAccessory() {
 		this.accessory.getService(this.hapService.AccessoryInformation)
-						.setCharacteristic(this.hapCharacteristic.Manufacturer, "IlCato")
-						.setCharacteristic(this.hapCharacteristic.Model, "HomeCenterBridgedAccessory")
-						.setCharacteristic(this.hapCharacteristic.SerialNumber, "<unknown>");
+            .setCharacteristic(this.hapCharacteristic.Manufacturer, "Fibaro HC2")
+            .setCharacteristic(this.hapCharacteristic.Model, this.model);
+            if (this.serial !="") {
+                this.accessory.getService(this.hapService.AccessoryInformation)
+                    .setCharacteristic(this.hapCharacteristic.SerialNumber, this.serial);
+            } 
+            else {
+                this.accessory.getService(this.hapService.AccessoryInformation)
+                    .setCharacteristic(this.hapCharacteristic.SerialNumber, "<unknown>");
+            }
   	}
 
   	removeNoMoreExistingServices() {
